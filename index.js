@@ -31,28 +31,28 @@ bot.on("message", async (msg) => {
                 BotServices2.roomReservationsAndBookings(chatID);
                 break;
             case "3. Wi-Fi Connection":
-                // Execute function for FAQ
+                BotServices3.fetchWifiDetails(chatID);
                 break;
             case "4. Gym and Pool Facilities":
-                // Execute function for Directions and Local Attractions
+                BotServices4.fetchGymAndPoolInfo(chatID);
                 break;
             case "5. Lost and Found Services":
-                // Execute function for Check-in and Check-out
+                BotServices5.lostAndFoundServices(chatID); 
                 break;
             case "6. Room Service Orders":
                 // Execute function for Room Service Orders
                 break;
             case "7. Hotel Policies and Procedures":
-                // Execute function for Hotel Policies and Procedures
+                BotServices7.fetchHotelPolicies(chatID);
                 break;
             case "8. Handle Complaints":
                 // Execute function for Handling Complaints
                 break;
             case "9. Billing and Payment":
-                // Execute function for Billing and Payment
+                BotServices9.fetchBillingAndPaymentInfo(chatID);
                 break;
             case "10. General Customer Support":
-                // Execute function for Nearby Recommendations
+                BotServices10.fetchGeneralSupportInfo(chatID);
                 break;
             case "End Chat With Bot":
                 bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");

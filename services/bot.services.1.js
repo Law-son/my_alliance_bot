@@ -32,8 +32,7 @@ class BotServices1 {
 8. 🚕 Airport Shuttle: Complimentary shuttle service.
 9. 🧳 Concierge: Our staff can assist with travel plans.
 10. 🏢 Business Center: Business amenities for professionals.
-
-How can we assist you today?`;
+`;
 
         // Send amenities information with the submenu
         bot.sendMessage(chatID, amenitiesInfo, subMenu);
@@ -45,7 +44,7 @@ How can we assist you today?`;
 
             if (userInput === "/start" || userInput.toLowerCase() === "menu") {
                 // Provide the main menu options when requested
-                bot.sendMessage(chatID, "Welcome to the hotel bot! Please select an option from the menu:", BotServices1.mainMenuKeyboard);
+                bot.sendMessage(chatID, "Welcome, I'm myAllianceBot! Please select an option from the menu:", BotServices1.mainMenuKeyboard);
             } else {
                 // Check the user's input and trigger corresponding functions
                 switch (userInput) {

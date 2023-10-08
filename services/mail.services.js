@@ -7,7 +7,7 @@ const userId = process.env.userId;
 
 
 class MailServices{
-  static async sendEmail(name, subject, body) {
+  static async sendEmail(subject, body) {
     const url = 'https://api.emailjs.com/api/v1.0/email/send';
 
     try {
@@ -18,7 +18,7 @@ class MailServices{
             template_params: {
                 to_email: 'buabassahlawson@gmail.com',
                 from_name: 'Alliance Hotel',
-                to_name: name,
+                to_name: 'Alliance Hotel Staff',
                 reply_to: 'agroguard@gmail.com',
                 subject: subject,
                 message: body,
