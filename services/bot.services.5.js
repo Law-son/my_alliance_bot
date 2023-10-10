@@ -21,98 +21,80 @@ class BotServices5 {
             }
         };
 
-        // Variables to store user details
-        let lostItemDetails = "";
-        let foundItemDetails = "";
-        lost = false;
+        bot.sendMessage(chatID, "Please select an option from the menu below", subMenu);
 
-        await bot.sendMessage(chatID, "Please select an option from the menu below", subMenu);
+        let foundItem = false;
+        let itemLost = "";
+        let itemFound = "";
 
-        // Listen for user input
-        bot.on("message", (msg) => {
+        bot.onText(/Go Back To Main Menu/, (msg) => {
             const chatID = msg.chat.id;
-            const userInput = msg.text;
-
-            if (userInput === "/start") {
-                // Provide the main menu options when requested
-                bot.sendMessage(chatID, "Welcome, I'm myAllianceBot! Please select an option from the menu:", BotServices5.mainMenuKeyboard);
-            } else {
-                // Check the user's input and trigger corresponding functions
-                switch (userInput) {
-                    case "Go Back To Main Menu":
-                        // Go back to the main menu
-                        bot.sendMessage(chatID, "Returning to the main menu:", BotServices5.mainMenuKeyboard);
-                        break;
-                    case "End Chat With Bot":
-                        // End the chat with the bot
-                        bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-                        break;
-                    case "Found a lost item":
-                        // End the chat with the bot
-                        lost = true;
-                        bot.sendMessage(chatID, "Please enter the item name and your room number.");
-                        break;
-                    case "Report missing item":
-                        // End the chat with the bot
-                        bot.sendMessage(chatID, "Please enter the missing item name and your room number.");
-                        break;
-                    default:
-                        // Collect user's name
-                        bot.sendMessage(chatID, "Please select from the menu below.", subMenu);
-                }
-            }
+            bot.sendMessage(chatID, "Returning to the main menu:", BotServices5.mainMenuKeyboard);
         });
 
+        bot.onText(/End Chat With Bot/, (msg) => {
+            const chatID = msg.chat.id;
+            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+        });
 
-        // Listen for user input
-        bot.on("message", (msg) => {
+        bot.onText(/Report missing item/, (msg) => {
+            const chatID = msg.chat.id;
+            foundItem = false;
+            bot.sendMessage(chatID, "Please enter the missing item name and your room number.");
+        });
+
+        bot.onText(/Found a lost item/, (msg) => {
+            const chatID = msg.chat.id;
+            foundItem = true;
+            bot.sendMessage(chatID, "Please enter the item name and your room number.");
+        });
+
+        bot.onText(/.+/, (msg) => {
             const chatID = msg.chat.id;
             const userInput = msg.text;
-            if(lost){
-                lostItemDetails = userInput;
-                foundItemDetails = null;
+            if(foundItem == false){
+                itemLost = userInput;
             }else{
-                lostItemDetails = null;
-                foundItemDetails = userInput;
+                itemFound = userInput;
             }
-
             bot.sendMessage(chatID, "Thank you. Our staff will attend to you soon.", BotServices5.mainMenuKeyboard);
         });
 
-        //get details and send email
+        // Get details and send email
         const date = new Date().toLocaleDateString();
-        if(lost){
-            const mailBody = `
-        🌟 Good day, Alliance Hotel staff!
+        let mailBody = "";
+        if (!foundItem) {
+            mailBody = `
+                🌟 Good day, Alliance Hotel staff!
 
-        A customer lost his item on ${date}. Below is the item name and room number of the person:
-        ${lostItemDetails}
-        `;
-        }else{
-            const mailBody = `
-        🌟 Good day, Alliance Hotel staff!
+                A customer lost their item on ${date}. Below is the item name and room number of the person:
+                ${itemLost}
+            `;
+        } else {
+            mailBody = `
+                🌟 Good day, Alliance Hotel staff!
 
-        A lost item was found on ${date}. Below is the item name and room number of the founder:
-        ${foundItemDetails}
-        `;
+                A lost item was found on ${date}. Below is the item name and room number of the founder:
+                ${itemFound}
+            `;
         }
 
         try {
             // Use await for asynchronous operations
             await MailServices.sendEmail("Lost And Found Services", mailBody);
-            
+
             // Provide confirmation to the user
-            bot.sendMessage(chatID, "Thank you for providing your details. Your booking request has been sent.", BotServices5.mainMenuKeyboard);
+            bot.sendMessage(chatID, "Thank you for providing your details. Your request has been sent.", BotServices5.mainMenuKeyboard);
+            delete this.chatStates[chatID];
 
         } catch (error) {
             // Handle email sending error
-            bot.sendMessage(chatID, "There was an issue sending your booking request. Please try again later.", BotServices5.mainMenuKeyboard);
-            reject(error);
+            bot.sendMessage(chatID, "There was an issue sending your request. Please try again later.", BotServices5.mainMenuKeyboard);
+            console.error(error);
         }
-
     }
 
-    mainMenuKeyboard = {
+    static mainMenuKeyboard = {
         reply_markup: {
             keyboard: [
                 ["1. Hotel Amenities and Services"],

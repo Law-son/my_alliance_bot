@@ -40,13 +40,13 @@ bot.on("message", async (msg) => {
                 BotServices5.lostAndFoundServices(chatID); 
                 break;
             case "6. Room Service Orders":
-                // Execute function for Room Service Orders
+                BotServices6.roomServiceOrders(chatID); 
                 break;
             case "7. Hotel Policies and Procedures":
                 BotServices7.fetchHotelPolicies(chatID);
                 break;
             case "8. Handle Complaints":
-                // Execute function for Handling Complaints
+                BotServices8.handleComplaints(chatID); 
                 break;
             case "9. Billing and Payment":
                 BotServices9.fetchBillingAndPaymentInfo(chatID);

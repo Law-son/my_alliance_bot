@@ -18,8 +18,8 @@ class BotServices9 {
             }
         };
 
-// Provide information about billing and payment info
-const billingAndPaymentInfo = `
+        // Provide information about billing and payment info
+        const billingAndPaymentInfo = `
 🏨 Welcome to our hotel! Here's everything you need to know about billing and payment:
 
 1. 💳 Payment Methods: We accept various payment methods for your convenience, including:
@@ -46,30 +46,14 @@ We strive to make your payment experience as convenient as possible. If you have
         // Send gymAndPoolInfo information with the submenu
         bot.sendMessage(chatID, billingAndPaymentInfo, subMenu);
 
-        // Listen for user input
-        bot.on("message", (msg) => {
+        bot.onText(/Go Back To Main Menu/, (msg) => {
             const chatID = msg.chat.id;
-            const userInput = msg.text;
+            bot.sendMessage(chatID, "Returning to the main menu:", BotServices9.mainMenuKeyboard);
+        });
 
-            if (userInput === "/start" || userInput.toLowerCase() === "menu") {
-                // Provide the main menu options when requested
-                bot.sendMessage(chatID, "Welcome, I'm myAllianceBot! Please select an option from the menu:", BotServices9.mainMenuKeyboard);
-            } else {
-                // Check the user's input and trigger corresponding functions
-                switch (userInput) {
-                    case "Go Back To Main Menu":
-                        // Go back to the main menu
-                        bot.sendMessage(chatID, "Returning to the main menu:", BotServices9.mainMenuKeyboard);
-                        break;
-                    case "End Chat With Bot":
-                        // End the chat with the bot
-                        bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-                        break;
-                    default:
-                        // Handle unknown input or provide instructions
-                        bot.sendMessage(chatID, "Please select an option from the menu:", BotServices9.mainMenuKeyboard);
-                }
-            }
+        bot.onText(/End Chat With Bot/, (msg) => {
+            const chatID = msg.chat.id;
+            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
         });
     }
 }

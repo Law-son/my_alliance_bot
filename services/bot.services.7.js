@@ -19,7 +19,7 @@ class BotServices7 {
         };
 
         // Provide information about hotel policies and procedures
-const hotelPolicies = `
+        const hotelPolicies = `
 🏨 Welcome to our hotel! To ensure a pleasant stay, please familiarize yourself with our policies and procedures:
 
 1. 🕒 Check-in and Check-out: Check-in time is 3:00 PM, and check-out time is 11:00 AM.
@@ -37,33 +37,18 @@ We strive to provide a comfortable and enjoyable experience for all our guests. 
 `;
 
 
-        // Send gymAndPoolInfo information with the submenu
+        // Send amenities information with the submenu
         bot.sendMessage(chatID, hotelPolicies, subMenu);
 
-        // Listen for user input
-        bot.on("message", (msg) => {
-            const chatID = msg.chat.id;
-            const userInput = msg.text;
 
-            if (userInput === "/start" || userInput.toLowerCase() === "menu") {
-                // Provide the main menu options when requested
-                bot.sendMessage(chatID, "Welcome, I'm myAllianceBot! Please select an option from the menu:", BotServices7.mainMenuKeyboard);
-            } else {
-                // Check the user's input and trigger corresponding functions
-                switch (userInput) {
-                    case "Go Back To Main Menu":
-                        // Go back to the main menu
-                        bot.sendMessage(chatID, "Returning to the main menu:", BotServices7.mainMenuKeyboard);
-                        break;
-                    case "End Chat With Bot":
-                        // End the chat with the bot
-                        bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-                        break;
-                    default:
-                        // Handle unknown input or provide instructions
-                        bot.sendMessage(chatID, "Please select an option from the menu:", BotServices7.mainMenuKeyboard);
-                }
-            }
+        bot.onText(/Go Back To Main Menu/, (msg) => {
+            const chatID = msg.chat.id;
+            bot.sendMessage(chatID, "Returning to the main menu:", BotServices7.mainMenuKeyboard);
+        });
+
+        bot.onText(/End Chat With Bot/, (msg) => {
+            const chatID = msg.chat.id;
+            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
         });
     }
 }

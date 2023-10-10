@@ -7,7 +7,7 @@ const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 class BotServices2 {
-    static async roomReservationsAndBookings(chatID) {
+    static async roomReservationsAndBookings(chatID, userInput) {
         const subMenu = {
             reply_markup: {
                 keyboard: [
@@ -19,126 +19,73 @@ class BotServices2 {
             }
         };
 
-        // Variables to store user details
         let userName = "";
-        let userPhone = "";
-        let numberOfRooms = "";
+        let phone = "";
+        let noRooms = "";
 
-        await bot.sendMessage(chatID, "Please enter your full name", subMenu);
+        // Provide initial instruction
+        bot.sendMessage(chatID, "Please enter your full name", subMenu);
 
-        // Listen for user input
-        bot.on("message", (msg) => {
+
+        bot.onText(/Go Back To Main Menu/, (msg) => {
             const chatID = msg.chat.id;
-            const userInput = msg.text;
-
-            if (userInput === "/start") {
-                // Provide the main menu options when requested
-                bot.sendMessage(chatID, "Welcome, I'm myAllianceBot! Please select an option from the menu:", BotServices2.mainMenuKeyboard);
-            } else {
-                // Check the user's input and trigger corresponding functions
-                switch (userInput) {
-                    case "Go Back To Main Menu":
-                        // Go back to the main menu
-                        bot.sendMessage(chatID, "Returning to the main menu:", BotServices2.mainMenuKeyboard);
-                        break;
-                    case "End Chat With Bot":
-                        // End the chat with the bot
-                        bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-                        break;
-                    default:
-                        // Collect user's name
-                        userName = userInput;
-                }
-
-            }
+            bot.sendMessage(chatID, "Returning to the main menu:", BotServices2.mainMenuKeyboard);
         });
 
-
-        await bot.sendMessage(chatID, `Thank you, ${userName}! Now please provide your phone number.`, BotServices2.subMenu);
-
-        // Listen for user input
-        bot.on("message", (msg) => {
+        bot.onText(/End Chat With Bot/, (msg) => {
             const chatID = msg.chat.id;
-            const userInput = msg.text;
-
-            if (userInput === "/start") {
-                // Provide the main menu options when requested
-                bot.sendMessage(chatID, "Welcome, I'm myAllianceBot! Please select an option from the menu:", BotServices2.mainMenuKeyboard);
-            } else {
-                // Check the user's input and trigger corresponding functions
-                switch (userInput) {
-                    case "Go Back To Main Menu":
-                        // Go back to the main menu
-                        bot.sendMessage(chatID, "Returning to the main menu:", BotServices2.mainMenuKeyboard);
-                        break;
-                    case "End Chat With Bot":
-                        // End the chat with the bot
-                        bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-                        break;
-                    default:
-                        // Collect user's phone number
-                        userPhone = userInput;
-                }
-
-            }
+            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
         });
 
-        await bot.sendMessage(chatID, "Thank you! Now please provide the number of rooms want to book.");
+        let replies = [
+            `Thank you, ${userName}! Now please provide your phone number.`,
+            `Thank you! Now please provide the number of rooms you want to book.`
+                `Thank you for providing your details.`
+        ];
 
-        // Listen for user input
-        bot.on("message", (msg) => {
-            const chatID = msg.chat.id;
-            const userInput = msg.text;
-
-            if (userInput === "/start") {
-                // Provide the main menu options when requested
-                bot.sendMessage(chatID, "Welcome, I'm myAllianceBot! Please select an option from the menu:", BotServices2.mainMenuKeyboard);
-            } else {
-                // Check the user's input and trigger corresponding functions
-                switch (userInput) {
-                    case "Go Back To Main Menu":
-                        // Go back to the main menu
-                        bot.sendMessage(chatID, "Returning to the main menu:", BotServices2.mainMenuKeyboard);
-                        break;
-                    case "End Chat With Bot":
-                        // End the chat with the bot
-                        bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-                        break;
-                    default:
-                        // Collect number of rooms
-                        numberOfRooms = userInput;
+        for(let i = 0; i < 3; i++) {
+            bot.onText(/.+/, (msg) => {
+                const chatID = msg.chat.id;
+                const userInput = msg.text;
+                if (stateCount == 0) {
+                    userName = userInput;
                 }
-
-            }
-        });
+                if (stateCount == 1) {
+                    phone = userInput;
+                }
+                if (stateCount == 2) {
+                    noRooms = userInput;
+                }
+                bot.sendMessage(chatID, replies[stateCount]);
+            });
+        }
 
         // Send email with collected details
         const date = new Date().toLocaleDateString();
         const mailBody = `
-        🌟 Good day, Alliance Hotel staff!
+                🌟 Good day, Alliance Hotel staff!
 
-        A booking has been made by ${userName} on ${date}. Here are the booking details:
+                A booking has been made by ${userName} on ${date}. Here are the booking details:
 
-        📞 Phone Number: ${userPhone}
-        🛏️ Number Of Rooms: ${numberOfRooms}
-        `;
+                📞 Phone Number: ${phone}
+                🛏️ Number Of Rooms: ${noRooms}
+                `;
 
         try {
             // Use await for asynchronous operations
             await MailServices.sendEmail("Room Reservation and Booking", mailBody);
-            
+
             // Provide confirmation to the user
             bot.sendMessage(chatID, "Thank you for providing your details. Your booking request has been sent.", BotServices2.mainMenuKeyboard);
 
         } catch (error) {
             // Handle email sending error
             bot.sendMessage(chatID, "There was an issue sending your booking request. Please try again later.", BotServices2.mainMenuKeyboard);
-            reject(error);
+            console.error(error);
         }
-
     }
 
-    mainMenuKeyboard = {
+    static mainMenuKeyboard = {
         reply_markup: {
             keyboard: [
                 ["1. Hotel Amenities and Services"],
