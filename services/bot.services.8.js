@@ -48,17 +48,16 @@ class BotServices8 {
             bot.onText(/.+/, (msg) => {
                 const chatID = msg.chat.id;
                 const userInput = msg.text;
-                if (stateCount == 0) {
+                if (i == 0) {
                     userName = userInput;
                 }
-                if (stateCount == 1) {
+                if (i == 1) {
                     roomNo = userInput;
                 }
-                if (stateCount == 2) {
+                if (i == 2) {
                     complaint = userInput;
                 }
-                bot.sendMessage(chatID, replies[stateCount]);
-                stateCount = stateCount + 1;
+                bot.sendMessage(chatID, replies[i]);
             });
         }
 
