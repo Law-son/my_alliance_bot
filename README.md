@@ -1,2 +1,2 @@
-# my_alliance_bot
+myAllianceBot
 A telegram bot for hotel management
