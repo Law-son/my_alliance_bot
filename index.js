@@ -1,5 +1,5 @@
-const TelegramBot = require("node-telegram-bot-api/lib/telegram");
-const axios = require("axios");
+// const TelegramBot = require("node-telegram-bot-api/lib/telegram");
+const TelegramBot = require("node-telegram-bot-api");
 require('dotenv').config();
 const BotServices1 = require('./services/bot.services.1');
 const BotServices2 = require('./services/bot.services.2');
@@ -83,3 +83,5 @@ const mainMenuKeyboard = {
         one_time_keyboard: true,
     }
 };
+
+module.exports = bot;

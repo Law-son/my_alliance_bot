@@ -1,10 +1,6 @@
-const TelegramBot = require("node-telegram-bot-api");
-require('dotenv').config();
+const bot = require('../index');
+
 const MailServices = require("./mail.services");
-
-const token = process.env.TOKEN;
-
-const bot = new TelegramBot(token, { polling: true });
 
 class BotServices5 {
     static async lostAndFoundServices(chatID) {

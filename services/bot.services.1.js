@@ -1,9 +1,4 @@
-const TelegramBot = require("node-telegram-bot-api");
-require('dotenv').config();
-
-const token = process.env.TOKEN;
-
-const bot = new TelegramBot(token, { polling: true });
+const bot = require('../index');
 
 class BotServices1 {
     static async fetchHotelAmenitiesAndServices(chatID) {
@@ -20,23 +15,22 @@ class BotServices1 {
 
         // Provide information about hotel amenities and services with emojis
         const amenitiesInfo = `
-🏨 Welcome to our hotel! Here are some of our amenities and services:
-  
-1. 🍽️ Dining: Enjoy delicious meals at our restaurant.
-2. 🏊‍♂️ Pool: Take a dip in our refreshing swimming pool.
-3. 💪 Gym: Stay fit in our fully-equipped gym.
-4. 🚗 Parking: We offer secure parking facilities.
-5. 🌐 Wi-Fi: High-speed Wi-Fi is available in all areas.
-6. 🛎️ Room Service: Order your favorite dishes to your room.
-7. 🎉 Events: Host your special events at our banquet hall.
-8. 🚕 Airport Shuttle: Complimentary shuttle service.
-9. 🧳 Concierge: Our staff can assist with travel plans.
-10. 🏢 Business Center: Business amenities for professionals.
-`;
+        🏨 Welcome to our hotel! Here are some of our amenities and services:
+        
+        1. 🍽️ Dining: Enjoy delicious meals at our restaurant.
+        2. 🏊‍♂️ Pool: Take a dip in our refreshing swimming pool.
+        3. 💪 Gym: Stay fit in our fully-equipped gym.
+        4. 🚗 Parking: We offer secure parking facilities.
+        5. 🌐 Wi-Fi: High-speed Wi-Fi is available in all areas.
+        6. 🛎️ Room Service: Order your favorite dishes to your room.
+        7. 🎉 Events: Host your special events at our banquet hall.
+        8. 🚕 Airport Shuttle: Complimentary shuttle service.
+        9. 🧳 Concierge: Our staff can assist with travel plans.
+        10. 🏢 Business Center: Business amenities for professionals.
+        `;
 
         // Send amenities information with the submenu
         bot.sendMessage(chatID, amenitiesInfo, subMenu);
-
 
         bot.onText(/Go Back To Main Menu/, (msg) => {
             const chatID = msg.chat.id;

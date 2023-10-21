@@ -1,9 +1,4 @@
-const TelegramBot = require("node-telegram-bot-api");
-require('dotenv').config();
-
-const token = process.env.TOKEN;
-
-const bot = new TelegramBot(token, { polling: true });
+const bot = require('../index');
 
 class BotServices10 {
     static async fetchGeneralSupportInfo(chatID) {
