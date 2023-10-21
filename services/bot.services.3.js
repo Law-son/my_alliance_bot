@@ -1,7 +1,7 @@
 const bot = require('../index');
 
 class BotServices3 {
-    static async fetchWifiDetails(chatID) {
+    static async fetchWifiDetails(chatID, bot) {
         const subMenu = {
             reply_markup: {
                 keyboard: [

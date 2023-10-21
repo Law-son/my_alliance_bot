@@ -16,6 +16,7 @@ const token = process.env.TOKEN;
 
 const bot = new TelegramBot(token, { polling: true });
 
+//BotServices1.botStuff(bot);
 bot.on("message", async (msg) => {
     const chatID = msg.chat.id;
     const userInput = msg.text;
@@ -25,34 +26,34 @@ bot.on("message", async (msg) => {
     } else {
         switch (userInput) {
             case "1. Hotel Amenities and Services":
-                BotServices1.fetchHotelAmenitiesAndServices(chatID);
+                BotServices1.fetchHotelAmenitiesAndServices(chatID, bot);
                 break;
             case "2. Room Reservations and Bookings":
-                BotServices2.roomReservationsAndBookings(chatID);
+                BotServices2.roomReservationsAndBookings(chatID, bot);
                 break;
             case "3. Wi-Fi Connection":
-                BotServices3.fetchWifiDetails(chatID);
+                BotServices3.fetchWifiDetails(chatID, bot);
                 break;
             case "4. Gym and Pool Facilities":
-                BotServices4.fetchGymAndPoolInfo(chatID);
+                BotServices4.fetchGymAndPoolInfo(chatID, bot);
                 break;
             case "5. Lost and Found Services":
-                BotServices5.lostAndFoundServices(chatID); 
+                BotServices5.lostAndFoundServices(chatID, bot); 
                 break;
             case "6. Room Service Orders":
-                BotServices6.roomServiceOrders(chatID); 
+                BotServices6.roomServiceOrders(chatID, bot); 
                 break;
             case "7. Hotel Policies and Procedures":
-                BotServices7.fetchHotelPolicies(chatID);
+                BotServices7.fetchHotelPolicies(chatID, bot);
                 break;
             case "8. Handle Complaints":
-                BotServices8.handleComplaints(chatID); 
+                BotServices8.handleComplaints(chatID, bot); 
                 break;
             case "9. Billing and Payment":
-                BotServices9.fetchBillingAndPaymentInfo(chatID);
+                BotServices9.fetchBillingAndPaymentInfo(chatID, bot);
                 break;
             case "10. General Customer Support":
-                BotServices10.fetchGeneralSupportInfo(chatID);
+                BotServices10.fetchGeneralSupportInfo(chatID, bot);
                 break;
             case "End Chat With Bot":
                 bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
@@ -84,4 +85,3 @@ const mainMenuKeyboard = {
     }
 };
 
-module.exports = bot;

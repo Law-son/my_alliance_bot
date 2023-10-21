@@ -1,7 +1,7 @@
 const bot = require('../index');
 
 class BotServices10 {
-    static async fetchGeneralSupportInfo(chatID) {
+    static async fetchGeneralSupportInfo(chatID,bot) {
         const subMenu = {
             reply_markup: {
                 keyboard: [

@@ -1,9 +1,7 @@
-const bot = require('../index');
-
 const MailServices = require("./mail.services");
 
 class BotServices2 {
-    static async roomReservationsAndBookings(chatID, userInput) {
+    static async roomReservationsAndBookings(chatID, bot) {
         const subMenu = {
             reply_markup: {
                 keyboard: [
@@ -15,70 +13,84 @@ class BotServices2 {
             }
         };
 
-        let userName = "";
-        let phone = "";
-        let noRooms = "";
+        const userState = {
+            chatID,
+            step: 0,
+            userName: "",
+            phone: "",
+            noRooms: ""
+        };
 
-        // Provide initial instruction
-        bot.sendMessage(chatID, "Please enter your full name", subMenu);
+        const userStates = new Map();
+        userStates.set(chatID, userState);
 
+        const sendMessage = (chatID, message, keyboard) => {
+            bot.sendMessage(chatID, message, keyboard);
+        };
 
-        bot.onText(/Go Back To Main Menu/, (msg) => {
+        // Function to ask for the user's name
+        const askForName = (chatID) => {
+            const userState = userStates.get(chatID);
+            sendMessage(chatID, "Please enter your full name", subMenu);
+            userState.step = 0; // Reset the step to 0
+        };
+
+        // Function to handle user input for collecting details
+        bot.on("message", async (msg) => {
+            const userInput = msg.text;
             const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Returning to the main menu:", BotServices2.mainMenuKeyboard);
+            const userState = userStates.get(chatID);
+
+            if (userInput === "Go Back To Main Menu") {
+                sendMessage(chatID, "Returning to the main menu:", BotServices2.mainMenuKeyboard);
+            } else if (userInput === "End Chat With Bot") {
+                sendMessage(chatID, "Thank you for using our services. Have a great day!");
+                userStates.delete(chatID);
+            } else {
+                // Handle user input based on the current step
+                switch (userState.step) {
+                    case 0:
+                        // Collect user's name
+                        userState.userName = userInput;
+                        sendMessage(chatID, `Thank you, ${userState.userName}! Now please provide your phone number.`, subMenu);
+                        userState.step = 1;
+                        break;
+                    case 1:
+                        // Collect user's phone number
+                        userState.phone = userInput;
+                        sendMessage(chatID, "Thank you! Now please provide the number of rooms you want to book.", subMenu);
+                        userState.step = 2;
+                        break;
+                    case 2:
+                        // Collect number of rooms
+                        userState.noRooms = userInput;
+                        // Send email with collected details
+                        const date = new Date().toLocaleDateString();
+                        const mailBody = `
+                            🌟 Good day, Alliance Hotel staff!
+
+                            A booking has been made by ${userState.userName} on ${date}. Here are the booking details:
+                            📞 Phone Number: ${userState.phone}
+                            🛏️ Number Of Rooms: ${userState.noRooms}
+                        `;
+                        try {
+                            // Use await for asynchronous operations
+                            await MailServices.sendEmail("Room Reservation and Booking", mailBody);
+                            // Provide confirmation to the user and return to the main menu
+                            sendMessage(chatID, "Thank you for providing your details. Your booking request has been sent.", BotServices2.mainMenuKeyboard);
+                            userStates.delete(chatID);
+                        } catch (error) {
+                            // Handle email sending error
+                            sendMessage(chatID, "There was an issue sending your booking request. Please try again later.", subMenu);
+                            console.error(error);
+                        }
+                        break;
+                }
+            }
         });
 
-        bot.onText(/End Chat With Bot/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-        });
-
-        let replies = [
-            `Thank you, ${userName}! Now please provide your phone number.`,
-            `Thank you! Now please provide the number of rooms you want to book.`
-                `Thank you for providing your details.`
-        ];
-
-        for(let i = 0; i < 3; i++) {
-            bot.onText(/.+/, (msg) => {
-                const chatID = msg.chat.id;
-                const userInput = msg.text;
-                if (i == 0) {
-                    userName = userInput;
-                }
-                if (i == 1) {
-                    phone = userInput;
-                }
-                if (i == 2) {
-                    noRooms = userInput;
-                }
-                bot.sendMessage(chatID, replies[i]); 
-            });
-        }
-
-        // Send email with collected details
-        const date = new Date().toLocaleDateString();
-        const mailBody = `
-                🌟 Good day, Alliance Hotel staff!
-
-                A booking has been made by ${userName} on ${date}. Here are the booking details:
-
-                📞 Phone Number: ${phone}
-                🛏️ Number Of Rooms: ${noRooms}
-                `;
-
-        try {
-            // Use await for asynchronous operations
-            await MailServices.sendEmail("Room Reservation and Booking", mailBody);
-
-            // Provide confirmation to the user
-            bot.sendMessage(chatID, "Thank you for providing your details. Your booking request has been sent.", BotServices2.mainMenuKeyboard);
-
-        } catch (error) {
-            // Handle email sending error
-            bot.sendMessage(chatID, "There was an issue sending your booking request. Please try again later.", BotServices2.mainMenuKeyboard);
-            console.error(error);
-        }
+        // Ask for the user's name when the function is called
+        askForName(chatID);
     }
 
     static mainMenuKeyboard = {

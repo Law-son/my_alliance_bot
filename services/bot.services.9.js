@@ -1,7 +1,7 @@
 const bot = require('../index');
 
 class BotServices9 {
-    static async fetchBillingAndPaymentInfo(chatID) {
+    static async fetchBillingAndPaymentInfo(chatID, bot) {
         const subMenu = {
             reply_markup: {
                 keyboard: [

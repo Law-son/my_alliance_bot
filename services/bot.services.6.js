@@ -1,9 +1,7 @@
-const bot = require('../index');
-
 const MailServices = require("./mail.services");
 
 class BotServices6 {
-    static async roomServiceOrders(chatID) {
+    static async roomServiceOrders(chatID, bot) {
         const subMenu = {
             reply_markup: {
                 keyboard: [
@@ -15,6 +13,7 @@ class BotServices6 {
             }
         };
 
+        // Initialize variables to store user details
         let userName = "";
         let roomNo = "";
         let serviceWanted = "";
@@ -22,65 +21,53 @@ class BotServices6 {
         // Provide initial instruction
         bot.sendMessage(chatID, "Please enter your full name", subMenu);
 
+        // Listen for user input to collect details
+        bot.on("message", async (msg) => {
+            const userInput = msg.text;
 
-        bot.onText(/Go Back To Main Menu/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Returning to the main menu:", BotServices6.mainMenuKeyboard);
-        });
-
-        bot.onText(/End Chat With Bot/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-        });
-
-        let replies = [
-            `Thank you, ${userName}! Now please provide your room number.`,
-            `Thank you! Now, please specify your service request.`
-                `Thank you for your order. Our staff will attend to you soon.`
-        ];
-
-        for(let i = 0; i < 3; i++){
-            bot.onText(/.+/, (msg) => {
-                const chatID = msg.chat.id;
-                const userInput = msg.text;
-                if (i == 0) {
+            if (userInput === "Go Back To Main Menu") {
+                bot.sendMessage(chatID, "Returning to the main menu:", BotServices6.mainMenuKeyboard);
+            } else if (userInput === "End Chat With Bot") {
+                bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+            } else {
+                // Handle user input based on the current step
+                if (!userName) {
+                    // Collect user's name
                     userName = userInput;
-                }
-                if (i == 1) {
+                    bot.sendMessage(chatID, `Thank you, ${userName}! Now please provide your room number.`, subMenu);
+                } else if (!roomNo) {
+                    // Collect user's room number
                     roomNo = userInput;
-                }
-                if (i == 2) {
+                    bot.sendMessage(chatID, "Thank you! Now, please specify your service request.", subMenu);
+                } else if (!serviceWanted) {
+                    // Collect the service request
                     serviceWanted = userInput;
+
+                    // Send email with collected details
+                    const date = new Date().toLocaleDateString();
+                    const mailBody = `
+                        🌟 Good day, Alliance Hotel staff!
+
+                        A room service order has been placed by ${userName} on ${date}. Here are the details:
+                        🏨 Room Number: ${roomNo}
+                        🍽️ Service Request: ${serviceWanted}
+                    `;
+
+                    try {
+                        // Use await for asynchronous operations
+                        await MailServices.sendEmail("Room Service and Orders", mailBody);
+
+                        // Provide confirmation to the user and return to the main menu
+                        bot.sendMessage(chatID, "Thank you for providing your details. Your request has been sent.", BotServices6.mainMenuKeyboard);
+
+                    } catch (error) {
+                        // Handle email sending error
+                        bot.sendMessage(chatID, "There was an issue sending your request. Please try again later.", subMenu);
+                        console.error(error);
+                    }
                 }
-                bot.sendMessage(chatID, replies[i]);
-            });
-        }
-
-        // Get details and send email
-        const date = new Date().toLocaleDateString();
-        const mailBody = `
-                            🌟 Good day, Alliance Hotel staff!
-        
-                            A room service order has been placed by ${userName} on ${date}. Here are the details:
-        
-                            🏨 Room Number: ${roomNo}
-                            🍽️ Service Request: ${serviceWanted}
-                        `;
-
-
-        try {
-            // Use await for asynchronous operations
-            await MailServices.sendEmail("Room Service and Orders", mailBody);
-
-            // Provide confirmation to the user
-            bot.sendMessage(chatID, "Thank you for providing your details. Your request has been sent.", BotServices6.mainMenuKeyboard);
-            delete this.chatStates[chatID];
-
-        } catch (error) {
-            // Handle email sending error
-            bot.sendMessage(chatID, "There was an issue sending your request. Please try again later.", BotServices6.mainMenuKeyboard);
-            console.error(error);
-        }
+            }
+        });
     }
 
     static mainMenuKeyboard = {

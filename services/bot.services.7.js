@@ -1,7 +1,7 @@
 const bot = require('../index');
 
 class BotServices7 {
-    static async fetchHotelPolicies(chatID) {
+    static async fetchHotelPolicies(chatID, bot) {
         const subMenu = {
             reply_markup: {
                 keyboard: [

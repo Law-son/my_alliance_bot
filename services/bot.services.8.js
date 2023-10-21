@@ -1,9 +1,7 @@
-const bot = require('../index');
-
 const MailServices = require("./mail.services");
 
 class BotServices8 {
-    static async handleComplaints(chatID) {
+    static async handleComplaints(chatID, bot) {
         const subMenu = {
             reply_markup: {
                 keyboard: [
@@ -15,7 +13,7 @@ class BotServices8 {
             }
         };
 
-
+        // Initialize variables to store user details
         let userName = "";
         let roomNo = "";
         let complaint = "";
@@ -23,65 +21,53 @@ class BotServices8 {
         // Provide initial instruction
         bot.sendMessage(chatID, "Please enter your full name", subMenu);
 
+        // Listen for user input to collect details
+        bot.on("message", async (msg) => {
+            const userInput = msg.text;
 
-        bot.onText(/Go Back To Main Menu/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Returning to the main menu:", BotServices8.mainMenuKeyboard);
-        });
-
-        bot.onText(/End Chat With Bot/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-        });
-
-        let replies = [
-            `Thank you, ${userName}! Now please provide your room number.`,
-            `Thank you! Now, please describe your complaint.`
-                `Thank you for your order.`
-        ];
-
-        for(let i = 0; i < 3; i++) {
-            bot.onText(/.+/, (msg) => {
-                const chatID = msg.chat.id;
-                const userInput = msg.text;
-                if (i == 0) {
+            if (userInput === "Go Back To Main Menu") {
+                bot.sendMessage(chatID, "Returning to the main menu:", BotServices8.mainMenuKeyboard);
+            } else if (userInput === "End Chat With Bot") {
+                bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+            } else {
+                // Handle user input based on the current step
+                if (!userName) {
+                    // Collect user's name
                     userName = userInput;
-                }
-                if (i == 1) {
+                    bot.sendMessage(chatID, `Thank you, ${userName}! Now please provide your room number.`, subMenu);
+                } else if (!roomNo) {
+                    // Collect user's room number
                     roomNo = userInput;
-                }
-                if (i == 2) {
+                    bot.sendMessage(chatID, "Thank you! Now, please describe your complaint.", subMenu);
+                } else if (!complaint) {
+                    // Collect the complaint description
                     complaint = userInput;
+
+                    // Send email with collected details
+                    const date = new Date().toLocaleDateString();
+                    const mailBody = `
+                        🌟 Good day, Alliance Hotel staff!
+
+                        A complaint has been submitted by ${userName} on ${date}. Here are the details:
+                        🏨 Room Number: ${roomNo}
+                        📃 Complaint: ${complaint}
+                    `;
+
+                    try {
+                        // Use await for asynchronous operations
+                        await MailServices.sendEmail("Complaint Submission", mailBody);
+
+                        // Provide confirmation to the user and return to the main menu
+                        bot.sendMessage(chatID, "Thank you for submitting your complaint. Our team will investigate and address it.", BotServices8.mainMenuKeyboard);
+
+                    } catch (error) {
+                        // Handle email sending error
+                        bot.sendMessage(chatID, "There was an issue sending your complaint. Please try again later.", subMenu);
+                        console.error(error);
+                    }
                 }
-                bot.sendMessage(chatID, replies[i]);
-            });
-        }
-
-        // Get details and send email
-        const date = new Date().toLocaleDateString();
-        const mailBody = `
-                            🌟 Good day, Alliance Hotel staff!
-        
-                            A room service order has been placed by ${userName} on ${date}. Here are the details:
-        
-                            🏨 Room Number: ${roomNo}
-                            🍽️ Service Request: ${complaint}
-                        `;
-
-
-        try {
-            // Use await for asynchronous operations
-            await MailServices.sendEmail("Room Service and Orders", mailBody);
-
-            // Provide confirmation to the user
-            bot.sendMessage(chatID, "Thank you for submitting your complaint. Our team will investigate and address it.", BotServices8.mainMenuKeyboard);
-            delete this.chatStates[chatID];
-
-        } catch (error) {
-            // Handle email sending error
-            bot.sendMessage(chatID, "There was an issue sending your complaint. Please try again later.", BotServices8.mainMenuKeyboard);
-            console.error(error);
-        }
+            }
+        });
     }
 
     static mainMenuKeyboard = {
