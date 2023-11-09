@@ -41,15 +41,15 @@ We strive to make your payment experience as convenient as possible. If you have
         // Send gymAndPoolInfo information with the submenu
         bot.sendMessage(chatID, billingAndPaymentInfo, subMenu);
 
-        bot.onText(/Go Back To Main Menu/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Returning to the main menu:", BotServices9.mainMenuKeyboard);
-        });
+        // bot.onText(/Go Back To Main Menu/, (msg) => {
+        //     const chatID = msg.chat.id;
+        //     bot.sendMessage(chatID, "Returning to the main menu:", BotServices9.mainMenuKeyboard);
+        // });
 
-        bot.onText(/End Chat With Bot/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-        });
+        // bot.onText(/End Chat With Bot/, (msg) => {
+        //     const chatID = msg.chat.id;
+        //     bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+        // });
     }
 }
 

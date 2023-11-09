@@ -38,16 +38,16 @@ bot.on("message", async (msg) => {
                 BotServices4.fetchGymAndPoolInfo(chatID, bot);
                 break;
             case "5. Lost and Found Services":
-                BotServices5.lostAndFoundServices(chatID, bot); 
+                BotServices5.lostAndFoundServices(chatID, bot);
                 break;
             case "6. Room Service Orders":
-                BotServices6.roomServiceOrders(chatID, bot); 
+                BotServices6.roomServiceOrders(chatID, bot);
                 break;
             case "7. Hotel Policies and Procedures":
                 BotServices7.fetchHotelPolicies(chatID, bot);
                 break;
             case "8. Handle Complaints":
-                BotServices8.handleComplaints(chatID, bot); 
+                BotServices8.handleComplaints(chatID, bot);
                 break;
             case "9. Billing and Payment":
                 BotServices9.fetchBillingAndPaymentInfo(chatID, bot);
@@ -55,12 +55,18 @@ bot.on("message", async (msg) => {
             case "10. General Customer Support":
                 BotServices10.fetchGeneralSupportInfo(chatID, bot);
                 break;
+            case "/Go Back To Main Menu/":
+                bot.sendMessage(chatID, "Returning to the main menu:", mainMenuKeyboard);
+                break;
+            case "/End Chat With Bot/":
+                bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+                break;
             case "End Chat With Bot":
                 bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
                 break;
             default:
                 // Handle unknown input or provide instructions
-                bot.sendMessage(chatID, "Please select an option from the menu:", mainMenuKeyboard);
+                console.log("Unknown item entered.");
         }
     }
 });

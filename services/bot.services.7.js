@@ -36,15 +36,15 @@ We strive to provide a comfortable and enjoyable experience for all our guests. 
         bot.sendMessage(chatID, hotelPolicies, subMenu);
 
 
-        bot.onText(/Go Back To Main Menu/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Returning to the main menu:", BotServices7.mainMenuKeyboard);
-        });
+        // bot.onText(/Go Back To Main Menu/, (msg) => {
+        //     const chatID = msg.chat.id;
+        //     bot.sendMessage(chatID, "Returning to the main menu:", BotServices7.mainMenuKeyboard);
+        // });
 
-        bot.onText(/End Chat With Bot/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-        });
+        // bot.onText(/End Chat With Bot/, (msg) => {
+        //     const chatID = msg.chat.id;
+        //     bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+        // });
     }
 }
 

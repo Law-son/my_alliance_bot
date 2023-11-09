@@ -25,27 +25,23 @@ class BotServices8 {
         bot.on("message", async (msg) => {
             const userInput = msg.text;
 
-            if (userInput === "Go Back To Main Menu") {
-                bot.sendMessage(chatID, "Returning to the main menu:", BotServices8.mainMenuKeyboard);
-            } else if (userInput === "End Chat With Bot") {
-                bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-            } else {
-                // Handle user input based on the current step
-                if (!userName) {
-                    // Collect user's name
-                    userName = userInput;
-                    bot.sendMessage(chatID, `Thank you, ${userName}! Now please provide your room number.`, subMenu);
-                } else if (!roomNo) {
-                    // Collect user's room number
-                    roomNo = userInput;
-                    bot.sendMessage(chatID, "Thank you! Now, please describe your complaint.", subMenu);
-                } else if (!complaint) {
-                    // Collect the complaint description
-                    complaint = userInput;
 
-                    // Send email with collected details
-                    const date = new Date().toLocaleDateString();
-                    const mailBody = `
+            // Handle user input based on the current step
+            if (!userName) {
+                // Collect user's name
+                userName = userInput;
+                bot.sendMessage(chatID, `Thank you, ${userName}! Now please provide your room number.`, subMenu);
+            } else if (!roomNo) {
+                // Collect user's room number
+                roomNo = userInput;
+                bot.sendMessage(chatID, "Thank you! Now, please describe your complaint.", subMenu);
+            } else if (!complaint) {
+                // Collect the complaint description
+                complaint = userInput;
+
+                // Send email with collected details
+                const date = new Date().toLocaleDateString();
+                const mailBody = `
                         🌟 Good day, Alliance Hotel staff!
 
                         A complaint has been submitted by ${userName} on ${date}. Here are the details:
@@ -53,20 +49,20 @@ class BotServices8 {
                         📃 Complaint: ${complaint}
                     `;
 
-                    try {
-                        // Use await for asynchronous operations
-                        await MailServices.sendEmail("Complaint Submission", mailBody);
+                try {
+                    // Use await for asynchronous operations
+                    await MailServices.sendEmail("Complaint Submission", mailBody);
 
-                        // Provide confirmation to the user and return to the main menu
-                        bot.sendMessage(chatID, "Thank you for submitting your complaint. Our team will investigate and address it.", BotServices8.mainMenuKeyboard);
+                    // Provide confirmation to the user and return to the main menu
+                    bot.sendMessage(chatID, "Thank you for submitting your complaint. Our team will investigate and address it.", BotServices8.mainMenuKeyboard);
 
-                    } catch (error) {
-                        // Handle email sending error
-                        bot.sendMessage(chatID, "There was an issue sending your complaint. Please try again later.", subMenu);
-                        console.error(error);
-                    }
+                } catch (error) {
+                    // Handle email sending error
+                    bot.sendMessage(chatID, "There was an issue sending your complaint. Please try again later.", subMenu);
+                    console.error(error);
                 }
             }
+
         });
     }
 
@@ -92,3 +88,9 @@ class BotServices8 {
 }
 
 module.exports = BotServices8;
+
+// if (userInput === "Go Back To Main Menu") {
+//     bot.sendMessage(chatID, "Returning to the main menu:", BotServices8.mainMenuKeyboard);
+// } else if (userInput === "End Chat With Bot") {
+//     bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+// } else {}

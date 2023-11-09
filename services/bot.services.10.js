@@ -42,15 +42,15 @@ Our dedicated team is available to provide you with the best service possible. F
         bot.sendMessage(chatID, generalSupportInfo, subMenu);
 
 
-        bot.onText(/Go Back To Main Menu/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Returning to the main menu:", BotServices10.mainMenuKeyboard);
-        });
+        // bot.onText(/Go Back To Main Menu/, (msg) => {
+        //     const chatID = msg.chat.id;
+        //     bot.sendMessage(chatID, "Returning to the main menu:", BotServices10.mainMenuKeyboard);
+        // });
 
-        bot.onText(/End Chat With Bot/, (msg) => {
-            const chatID = msg.chat.id;
-            bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-        });
+        // bot.onText(/End Chat With Bot/, (msg) => {
+        //     const chatID = msg.chat.id;
+        //     bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+        // });
     }
 }
 

@@ -26,11 +26,14 @@ class BotServices5 {
         bot.on("message", async (msg) => {
             const userInput = msg.text;
             
-            if (userInput === "Go Back To Main Menu") {
-                bot.sendMessage(chatID, "Returning to the main menu:", BotServices5.mainMenuKeyboard);
-            } else if (userInput === "End Chat With Bot") {
-                bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
-            } else if (userInput === "Report missing item" || userInput === "Found a lost item") {
+            // if (userInput === "Go Back To Main Menu") {
+            //     bot.sendMessage(chatID, "Returning to the main menu:", BotServices5.mainMenuKeyboard);
+            // } else if (userInput === "End Chat With Bot") {
+            //     bot.sendMessage(chatID, "Thank you for using our services. Have a great day!");
+            // } else 
+           
+           
+            if (userInput === "Report missing item" || userInput === "Found a lost item") {
                 // Update the foundItem flag and provide the appropriate instruction
                 foundItem = userInput === "Found a lost item";
                 bot.sendMessage(chatID, `Please enter the ${foundItem ? "found" : "missing"} item name and your room number.`);
