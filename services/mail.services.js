@@ -16,7 +16,7 @@ class MailServices{
             template_id: templateId,
             user_id: userId,
             template_params: {
-                to_email: 'buabassahlawson@gmail.com',
+                to_email: '', //please put your testing email here
                 from_name: 'Alliance Hotel',
                 to_name: 'Alliance Hotel Staff',
                 reply_to: 'agroguard@gmail.com',
