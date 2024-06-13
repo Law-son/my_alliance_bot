@@ -65,12 +65,13 @@ class BotServices2 {
                         await MailServices.sendEmail("Room Reservation and Booking", mailBody);
                         // Provide confirmation to the user and return to the main menu
                         sendMessage(chatID, "Thank you for providing your details. Your booking request has been sent.", BotServices2.mainMenuKeyboard);
-                        //userState = 0;
+                       
                     } catch (error) {
                         // Handle email sending error
                         sendMessage(chatID, "There was an issue sending your booking request. Please try again later.", subMenu);
                         console.error(error);
                     }
+                    userState = null;
                     break;
                 default:
                     console.log("Ending chat or unknown text");
